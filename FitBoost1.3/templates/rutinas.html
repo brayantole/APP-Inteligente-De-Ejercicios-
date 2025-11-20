@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Rutinas - FitBoost Pro{% endblock %}
+
+{% block content %}
+<div class="rutinas-container">
+    <div class="rutinas-header">
+        <h1><i class="fas fa-list"></i> Explorador de Rutinas</h1>
+        <p>Descubre todas las rutinas disponibles para casa y gimnasio</p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filtros-section">
+        <div class="filtros-grid">
+            <div class="filtro-group">
+                <label for="filtro-nombre">Filtrar por nombre:</label>
+                <select id="filtro-nombre">
+                    <option value="">Todas las rutinas</option>
+                    {% for nombre in nombres_rutinas %}
+                    <option value="{{ nombre }}">{{ nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filtro-group">
+                <label for="filtro-variante">Filtrar por variante:</label>
+                <select id="filtro-variante">
+                    <option value="">Todas las variantes</option>
+                    <option value="Casa">Casa</option>
+                    <option value="Gimnasio">Gimnasio</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de Rutinas -->
+    <div class="rutinas-grid" id="rutinas-grid">
+        {% for rutina in rutinas %}
+        <div class="rutina-card" data-nombre="{{ rutina.nombre }}" data-variante="{{ rutina.variante }}">
+            <div class="rutina-header">
+                <h3>{{ rutina.nombre }}</h3>
+                <span class="variante-badge {{ 'casa' if rutina.variante == 'Casa' else 'gimnasio' }}">
+                    {{ rutina.variante }}
+                </span>
+            </div>
+            
+            <div class="rutina-objetivo">
+                <p>{{ rutina.objetivo }}</p>
+            </div>
+
+            <div class="rutina-actions">
+                <a href="{{ url_for('rutina_detalle', nombre=rutina.nombre, variante=rutina.variante) }}" 
+                   class="btn btn-primary btn-small">
+                    <i class="fas fa-eye"></i>
+                    Ver Detalles
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Mensaje si no hay resultados -->
+    <div id="no-resultados" style="display: none;">
+        <div class="no-results">
+            <i class="fas fa-search"></i>
+            <h3>No se encontraron rutinas</h3>
+            <p>Intenta con otros filtros</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

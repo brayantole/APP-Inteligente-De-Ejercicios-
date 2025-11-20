@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}{{ rutina.nombre }} - {{ rutina.variante }}{% endblock %}
+
+{% block content %}
+<div class="rutina-detalle-container">
+    <div class="rutina-header">
+        <a href="{{ url_for('rutinas') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Volver a Rutinas
+        </a>
+        
+        <div class="rutina-titulo">
+            <h1>{{ rutina.nombre }}</h1>
+            <span class="variante-badge large {{ 'casa' if rutina.variante == 'Casa' else 'gimnasio' }}">
+                {{ rutina.variante }}
+            </span>
+        </div>
+        
+        <p class="rutina-objetivo">{{ rutina.objetivo }}</p>
+    </div>
+
+    <div class="rutina-content">
+        <div class="rutina-contenido-card">
+            <h2><i class="fas fa-dumbbell"></i> Plan de Ejercicios</h2>
+            
+            <div class="table-responsive">
+                <table class="rutina-table">
+                    <thead>
+                        <tr>
+                            <th>Orden</th>
+                            <th>Ejercicio</th>
+                            <th>Series</th>
+                            <th>Reps</th>
+                            <th>Descanso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {# Lógica para agrupar por días y evitar repetir el nombre del día #}
+                        {% set current_day = namespace(value=None) %}
+                        
+                        {% for ej in rutina.ejercicios %}
+                            {# Si cambia el día, insertamos una fila de cabecera #}
+                            {% if current_day.value != ej.dia %}
+                                <tr class="day-header-row" style="background-color: #e8f4f8; border-top: 2px solid #3498db;">
+                                    <td colspan="5" style="padding: 15px; color: #2c3e50; font-weight: bold; font-size: 1.1rem;">
+                                        <i class="far fa-calendar-alt"></i> {{ ej.dia }}
+                                    </td>
+                                </tr>
+                                {% set current_day.value = ej.dia %}
+                            {% endif %}
+                            
+                            <tr>
+                                <td style="text-align: center; color: #7f8c8d; font-weight: bold;">#{{ ej.orden }}</td>
+                                <td><strong>{{ ej.nombre_ejercicio }}</strong></td>
+                                <td>{{ ej.series }}</td>
+                                <td>{{ ej.repeticiones }}</td>
+                                <td>{{ ej.descanso }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5">No hay ejercicios cargados para esta rutina.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="rutina-actions-sidebar">
+            <div class="action-card">
+                <h3>Otras Versiones</h3>
+                <div class="version-buttons">
+                    {% if rutina.variante == 'Casa' %}
+                    <a href="{{ url_for('rutina_detalle', nombre=rutina.nombre, variante='Gimnasio') }}" 
+                       class="btn btn-secondary btn-block">
+                        <i class="fas fa-dumbbell"></i>
+                        Ver Versión Gimnasio
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('rutina_detalle', nombre=rutina.nombre, variante='Casa') }}" 
+                       class="btn btn-secondary btn-block">
+                        <i class="fas fa-home"></i>
+                        Ver Versión Casa
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="action-card">
+                <h3>Acciones</h3>
+                <div class="action-buttons">
+                    <button class="btn btn-outline btn-block" onclick="window.print()">
+                        <i class="fas fa-print"></i>
+                        Imprimir Rutina
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

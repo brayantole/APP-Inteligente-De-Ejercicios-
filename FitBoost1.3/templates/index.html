@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - FitBoost Pro{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">🏋️ FitBoost Pro Colombia</h1>
+        <p class="hero-subtitle">Tu planificador personal de entrenamiento y nutrición</p>
+        <p class="hero-description">
+            Crea tu plan personalizado con rutinas para casa o gimnasio, 
+            cálculo de calorías y seguimiento de progreso.
+        </p>
+        
+        <div class="hero-features">
+            <div class="feature">
+                <i class="fas fa-calculator"></i>
+                <span>Cálculo de calorías preciso</span>
+            </div>
+            <div class="feature">
+                <i class="fas fa-dumbbell"></i>
+                <span>+20 rutinas profesionales</span>
+            </div>
+            <div class="feature">
+                <i class="fas fa-home"></i>
+                <span>Para casa y gimnasio</span>
+            </div>
+            <div class="feature">
+                <i class="fas fa-chart-line"></i>
+                <span>Seguimiento de progreso</span>
+            </div>
+        </div>
+
+        <div class="hero-actions">
+            <a href="{{ url_for('planificador') }}" class="btn btn-primary btn-large">
+                <i class="fas fa-rocket"></i>
+                Crear Mi Plan
+            </a>
+            <a href="{{ url_for('rutinas') }}" class="btn btn-secondary btn-large">
+                <i class="fas fa-search"></i>
+                Explorar Rutinas
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="stats-section">
+    <div class="stats-container">
+        <div class="stat">
+            <div class="stat-number">7</div>
+            <div class="stat-label">Tipos de Rutina</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">14+</div>
+            <div class="stat-label">Rutinas Disponibles</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Personalizado</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">🇨🇴</div>
+            <div class="stat-label">Para Colombia</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

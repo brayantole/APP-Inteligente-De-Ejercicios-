@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Planificador - FitBoost Pro{% endblock %}
+
+{% block content %}
+<div class="planificador-container">
+    <div class="planificador-header">
+        <h1><i class="fas fa-rocket"></i> Crea Tu Plan Personalizado</h1>
+        <p>Completa el formulario para obtener tu plan de entrenamiento y nutrición</p>
+    </div>
+
+    <!-- NUEVO: Botón para recuperar plan si ya existe -->
+    {% if session.get('usuario_actual') %}
+    <div class="form-section" style="border-left: 5px solid #27ae60; background-color: #eafaf1;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h3 style="color: #27ae60; margin-bottom: 0.5rem;"><i class="fas fa-check-circle"></i> ¡Ya tienes un plan activo!</h3>
+                <p style="margin: 0;">Hola <strong>{{ session['usuario_actual']['nombre'] }}</strong>, puedes ver tu plan actual sin llenar el formulario de nuevo.</p>
+            </div>
+            <a href="{{ url_for('resumen') }}" class="btn btn-primary" style="background-color: #27ae60;">
+                <i class="fas fa-eye"></i> Ver Mi Plan Actual
+            </a>
+        </div>
+    </div>
+    <div style="text-align: center; margin: 2rem 0; position: relative;">
+        <span style="background: #f8f9fa; padding: 0 10px; color: #7f8c8d; position: relative; z-index: 1;">O crea uno nuevo abajo</span>
+        <hr style="position: absolute; top: 50%; width: 100%; z-index: 0; border: 0; border-top: 1px solid #e1e8ed;">
+    </div>
+    {% endif %}
+
+    <form method="POST" class="planificador-form" id="planForm">
+        <!-- Paso 1: Información Personal -->
+        <div class="form-section">
+            <h2><i class="fas fa-user"></i> Información Personal</h2>
+            
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required 
+                       placeholder="Tu nombre completo">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="sexo">Sexo:</label>
+                    <select id="sexo" name="sexo" required>
+                        <option value="">Selecciona...</option>
+                        <option value="1">Hombre</option>
+                        <option value="2">Mujer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="edad">Edad:</label>
+                    <input type="number" id="edad" name="edad" min="10" max="100" 
+                           required placeholder="Años">
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 2: Medidas Corporales -->
+        <div class="form-section">
+            <h2><i class="fas fa-weight-scale"></i> Medidas Corporales</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="peso_kg">Peso (kg):</label>
+                    <input type="number" id="peso_kg" name="peso_kg" step="0.1" 
+                           min="25" max="250" required placeholder="kg">
+                </div>
+
+                <div class="form-group">
+                    <label for="altura_m">Altura (m):</label>
+                    <input type="number" id="altura_m" name="altura_m" step="0.01" 
+                           min="1.00" max="2.30" required placeholder="metros">
+                    <small>Ej: 1.75 para 175 cm</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paso 3: Actividad y Objetivos -->
+        <div class="form-section">
+            <h2><i class="fas fa-chart-line"></i> Actividad y Objetivos</h2>
+            
+            <div class="form-group">
+                <label for="nivel_actividad">Nivel de Actividad:</label>
+                <select id="nivel_actividad" name="nivel_actividad" required>
+                    <option value="">Selecciona tu nivel...</option>
+                    <option value="Sedentario" data-multiplicador="1.2">Sedentario (poco o nada de ejercicio)</option>
+                    <option value="Ligero" data-multiplicador="1.375">Ligero (1-3 días/semana)</option>
+                    <option value="Moderado" data-multiplicador="1.55">Moderado (3-5 días/semana)</option>
+                    <option value="Activo" data-multiplicador="1.725">Activo (6-7 días/semana)</option>
+                    <option value="Muy activo" data-multiplicador="1.9">Muy activo (entrenamiento intenso diario)</option>
+                </select>
+                <input type="hidden" id="multiplicador_actividad" name="multiplicador_actividad">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dias_entrenamiento">Días de Entrenamiento/Semana:</label>
+                    <input type="number" id="dias_entrenamiento" name="dias_entrenamiento" 
+                           min="0" max="7" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="duracion_entrenamiento">Duración por Sesión (min):</label>
+                    <input type="number" id="duracion_entrenamiento" name="duracion_entrenamiento" 
+                           min="20" max="180" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="objetivo">Objetivo Principal:</label>
+                <select id="objetivo" name="objetivo" required>
+                    <option value="">Selecciona tu objetivo...</option>
+                    <option value="Bajar de peso">Bajar de peso</option>
+                    <option value="Definir">Definir (reducir grasa, mantener músculo)</option>
+                    <option value="Ganar masa muscular">Ganar masa muscular</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Paso 4: Suplementos -->
+        <div class="form-section">
+            <h2><i class="fas fa-capsules"></i> Suplementos</h2>
+            
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="usar_suplementos" name="usar_suplementos" value="true">
+                    <span class="checkmark"></span>
+                    Incluir suplementos en mi plan
+                </label>
+            </div>
+
+            <div class="form-group" id="presupuesto-group" style="display: none;">
+                <label for="presupuesto_suplementos">Presupuesto Mensual (COP):</label>
+                <input type="number" id="presupuesto_suplementos" name="presupuesto_suplementos" 
+                       min="20000" max="2000000" placeholder="Pesos colombianos">
+            </div>
+        </div>
+
+        <!-- Paso 5: Recordatorios -->
+        <div class="form-section">
+            <h2><i class="fas fa-bell"></i> Recordatorios</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="recordatorio_agua" name="recordatorio_agua" value="true">
+                        <span class="checkmark"></span>
+                        Recordatorio para beber agua
+                    </label>
+                    <input type="number" id="intervalo_agua" name="intervalo_agua" 
+                           min="0.5" max="12" step="0.5" placeholder="Horas" 
+                           style="display: none; margin-top: 10px;">
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="recordatorio_ejercicio" name="recordatorio_ejercicio" value="true">
+                        <span class="checkmark"></span>
+                        Recordatorio para ejercicio
+                    </label>
+                    <input type="number" id="intervalo_ejercicio" name="intervalo_ejercicio" 
+                           min="1" max="48" placeholder="Horas" 
+                           style="display: none; margin-top: 10px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-large">
+                <i class="fas fa-calculator"></i>
+                Generar Mi Plan
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

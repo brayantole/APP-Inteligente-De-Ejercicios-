@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Tu Plan - FitBoost Pro{% endblock %}
+
+{% block content %}
+<div class="resumen-container">
+    <div class="text-center mb-4">
+        <h1><i class="fas fa-check-circle" style="color: var(--success);"></i> ¡Tu Plan Está Listo, {{ usuario.nombre }}!</h1>
+        <p>Basado en tus datos, hemos calculado las siguientes metas.</p>
+    </div>
+
+    <div class="rutina-layout">
+        <div class="main-col">
+            <!-- Métricas -->
+            <div class="resumen-card">
+                <h2><i class="fas fa-chart-pie"></i> Calorías y Macronutrientes</h2>
+                <div class="metrics-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+                    <div class="metric-box">
+                        <div style="font-size: 2.5rem; font-weight: 800; color: var(--secondary);">{{ "%.0f"|format(meta_calorias) }}</div>
+                        <div style="color: var(--text-muted);">Kcal Diarias</div>
+                    </div>
+                    <div class="metric-box">
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-main);">{{ "%.1f"|format(imc) }}</div>
+                        <div style="color: var(--text-muted);">IMC ({{ clasif_imc }})</div>
+                    </div>
+                    <div class="metric-box">
+                        <div style="font-size: 2rem; font-weight: 700; color: var(--text-main);">{{ usuario.dias_entrenamiento }}</div>
+                        <div style="color: var(--text-muted);">Días/Semana</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones Rápidas -->
+            <div class="resumen-card" style="text-align: center;">
+                <h2><i class="fas fa-dumbbell"></i> Tu Rutina Sugerida: {{ usuario.rutina_sugerida }}</h2>
+                <p>Hemos seleccionado esta rutina porque se ajusta a tu frecuencia de {{ usuario.dias_entrenamiento }} días.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                    <a href="{{ url_for('rutina_detalle', nombre=usuario.rutina_sugerida, variante='Casa') }}" class="btn btn-primary">
+                        <i class="fas fa-home"></i> Versión Casa
+                    </a>
+                    <a href="{{ url_for('rutina_detalle', nombre=usuario.rutina_sugerida, variante='Gimnasio') }}" class="btn btn-secondary">
+                        <i class="fas fa-building"></i> Versión Gym
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="side-col">
+            <div class="resumen-card">
+                <h3>Datos Registrados</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">
+                        <strong>Objetivo:</strong> {{ usuario.objetivo }}
+                    </li>
+                    <li style="margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">
+                        <strong>Peso:</strong> {{ usuario.peso_kg }} kg
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        <strong>Suplementos:</strong> {{ 'Sí' if usuario.usar_suplementos else 'No' }}
+                        {% if usuario.usar_suplementos %}
+                        (${{ "%.0f"|format(usuario.presupuesto_suplementos) }})
+                        {% endif %}
+                    </li>
+                </ul>
+                <a href="{{ url_for('planificador') }}" class="btn btn-outline btn-block" style="margin-top: 1rem;">Editar Datos</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
