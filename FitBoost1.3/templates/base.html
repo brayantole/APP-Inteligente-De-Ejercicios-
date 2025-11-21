@@ -19,6 +19,8 @@
                 <a href="{{ url_for('index') }}" class="nav-link"><i class="fas fa-home"></i> Inicio</a>
                 <a href="{{ url_for('planificador') }}" class="nav-link"><i class="fas fa-calendar-alt"></i> Mi Plan</a>
                 <a href="{{ url_for('rutinas') }}" class="nav-link"><i class="fas fa-list"></i> Rutinas</a>
+                <!-- NUEVA OPCIÓN DIETA -->
+                <a href="#" class="nav-link" id="nav-dieta"><i class="fas fa-utensils"></i> Dieta</a>
             </div>
         </div>
     </nav>
@@ -26,6 +28,20 @@
     <main class="main-content">
         {% block content %}{% endblock %}
     </main>
+
+    <!-- VENTANA MODAL (Popup) -->
+    <div id="modal-dieta" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body">
+                <i class="fas fa-hard-hat construction-icon"></i>
+                <h2>¡En Construcción!</h2>
+                <p class="modal-text">Estamos trabajando duro para traerte el mejor plan nutricional y de comidas personalizado.</p>
+                <div class="modal-badge">Próximamente</div>
+                <p class="modal-subtext">Esta funcionalidad estará disponible en la siguiente versión.</p>
+            </div>
+        </div>
+    </div>
 
     <footer class="footer">
         <div class="footer-content">

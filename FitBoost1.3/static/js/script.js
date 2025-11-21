@@ -13,6 +13,38 @@ function inicializarApp() {
     
     // Inicializar funcionalidades de la página de resumen
     inicializarResumen();
+
+    // Inicializar Modal de Dieta
+    inicializarModalDieta();
+}
+
+// ===== MODAL DIETA =====
+function inicializarModalDieta() {
+    const modal = document.getElementById('modal-dieta');
+    const btn = document.getElementById('nav-dieta');
+    const span = document.querySelector('.close-modal');
+
+    if (btn && modal) {
+        // Abrir modal
+        btn.addEventListener('click', function(e) {
+            e.preventDefault(); // Evita que la página recargue
+            modal.style.display = "flex";
+        });
+
+        // Cerrar con la X
+        if (span) {
+            span.addEventListener('click', function() {
+                modal.style.display = "none";
+            });
+        }
+
+        // Cerrar al hacer click fuera del modal
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+    }
 }
 
 // ===== FILTROS DE RUTINAS =====
@@ -284,63 +316,3 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-
-// ===== FUNCIÓN MEJORADA PARA MANEJAR EL ENVÍO DEL FORMULARIO =====
-function manejarEnvioFormulario() {
-    const formulario = document.getElementById('planForm');
-    const botonEnviar = formulario.querySelector('button[type="submit"]');
-    
-    formulario.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Validar campos requeridos
-        if (!validarFormularioCompleto()) {
-            mostrarNotificacion('Por favor completa todos los campos requeridos', 'error');
-            return;
-        }
-        
-        // Mostrar estado de carga
-        const textoOriginal = botonEnviar.innerHTML;
-        botonEnviar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando Plan...';
-        botonEnviar.disabled = true;
-        
-        // Enviar formulario
-        setTimeout(() => {
-            formulario.submit();
-        }, 1000);
-    });
-}
-
-function validarFormularioCompleto() {
-    const camposRequeridos = ['nombre', 'sexo', 'edad', 'peso_kg', 'altura_m', 'nivel_actividad', 'dias_entrenamiento', 'duracion_entrenamiento', 'objetivo'];
-    
-    for (let campo of camposRequeridos) {
-        const elemento = document.getElementById(campo);
-        if (!elemento.value.trim()) {
-            resaltarError(elemento);
-            return false;
-        }
-    }
-    
-    // Validar rangos numéricos
-    const peso = parseFloat(document.getElementById('peso_kg').value);
-    const altura = parseFloat(document.getElementById('altura_m').value);
-    
-    if (peso < 25 || peso > 250) {
-        mostrarNotificacion('El peso debe estar entre 25kg y 250kg', 'error');
-        return false;
-    }
-    
-    if (altura < 1.00 || altura > 2.30) {
-        mostrarNotificacion('La altura debe estar entre 1.00m y 2.30m', 'error');
-        return false;
-    }
-    
-    return true;
-}
-
-// Inicializar en DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
-    inicializarApp();
-    manejarEnvioFormulario();
-});
